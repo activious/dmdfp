@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:dmdfp="dmdfp"
+                template="template.xhtml">
+    <ui:define name="content">
+        <div class="product">
+            Item ID: #{currentItem.itemId}<br />
+            <h:link outcome="item" styleClass="product-image">
+                <f:param name="itemID" value="#{currentItem.item.id}"/>
+                <h:graphicImage url="#{currentItem.item.url}" alt="#{currentItem.item.name}"/>
+            </h:link>
+            <div class="product-info">
+                <div class="product-name">
+                    <h:link outcome="item" value="#{currentItem.item.name}">
+                        <f:param name="itemID" value="#{currentItem.item.id}"/>
+                    </h:link>
+                </div>
+                <dmdfp:itemDescription item="#{currentItem.item}"/>
+                <div class="product-colors">
+                    <ul>
+                        <li><div class="color red"></div></li>
+                        <li><div class="color blue"></div></li>
+                        <li><div class="color green"></div></li>
+                    </ul>
+                </div>
+                <div class="product-price">
+                    DKK #{currentItem.item.price}
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>

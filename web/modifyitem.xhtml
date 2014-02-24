@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                template="template.xhtml">
+
+    <ui:define name="content">
+        Item ID: #{currentItem.itemId}<br />
+        <h:form>
+            <h:outputLabel for="name" value="Name"/>
+            <h:inputText id="name" value="#{itemList.currentItem.name}"/> <br/>
+            <h:outputLabel for="price" value="Price"/>
+            <h:inputText id="price" value="#{itemList.currentItem.price}"/> <br/>
+            <h:outputLabel for="url" value="URL"/>
+            <h:inputText id="url" size="100" value="#{itemList.currentItem.url}"/> <br/>
+
+            <h:outputLabel for="description" value="Description"/>
+            <h:inputTextarea id="description" cols="80" rows="10" value="#{itemList.currentItem.descriptionString}"/><br/>
+
+            <h:inputHidden value="#{itemList.currentItem.id}"/>
+            <h:commandButton type="submit" value="Modify" action="#{manager.modifyItem}"/>
+
+        </h:form>
+    </ui:define>
+</ui:composition>
