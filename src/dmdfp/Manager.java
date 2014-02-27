@@ -6,13 +6,14 @@ import org.jdom2.Element;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
+import java.io.Serializable;
 
 /**
  * Created by khk on 2/21/14.
  */
 @ManagedBean
 @SessionScoped
-public class Manager
+public class Manager implements Serializable
 {
 
     private static final String
@@ -31,6 +32,9 @@ public class Manager
 
     @ManagedProperty("#{auth}")
     private Authorization auth;
+
+    @ManagedProperty("#{env}")
+    private Environment env;
 
     public int getStockAdjustment() {
         return stockAdjustment;
@@ -58,7 +62,9 @@ public class Manager
 
     public boolean isUserAdmin()
     {
-        return (user.getUsername() != null && user.getUsername().equals(adminName) && auth.isLoggedIn());
+        return (auth.isLoggedIn()
+                && user.getUsername() != null
+                && user.getUsername().equals(adminName));
     }
 
     public String createItem()
@@ -71,7 +77,7 @@ public class Manager
                     item.getUrl(),
                     item.getPrice(),
                     item.getDescription(),
-                    Schema.PATH);
+                    env.getCloudSchemaPath());
 
             items.listItems();
             return SUCCESS;
@@ -117,5 +123,10 @@ public class Manager
         }
 
         return FAILURE;
+    }
+
+    public void setEnv(Environment e)
+    {
+        env = e;
     }
 }

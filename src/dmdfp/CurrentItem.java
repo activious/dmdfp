@@ -5,13 +5,14 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
 import javax.faces.bean.SessionScoped;
+import java.io.Serializable;
 
 /**
  * Created by khk on 2/21/14.
  */
 @ManagedBean
 @RequestScoped
-public class CurrentItem
+public class CurrentItem implements Serializable
 {
     @ManagedProperty("#{param.itemId}")
     private int itemId;

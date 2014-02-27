@@ -2,13 +2,13 @@ package dmdfp;
 
 import org.jdom2.Document;
 import org.jdom2.Element;
-import org.jdom2.output.Format;
-import org.jdom2.output.XMLOutputter;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.context.FacesContext;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +17,7 @@ import java.util.List;
  */
 @ManagedBean
 @ApplicationScoped
-public class ItemList
+public class ItemList implements Serializable
 {
     private static final String
             DOCUMENT = "document",
@@ -29,12 +29,12 @@ public class ItemList
             ITEM_STOCK = "itemStock",
             ITEM_DESCRIPTION = "itemDescription";
 
-
     private List<Item> items;
 
     private Item currentItem;
 
-
+    @ManagedProperty("#{env}")
+    private Environment env;
 
     @PostConstruct
     public void init()
@@ -78,12 +78,12 @@ public class ItemList
         items = new ArrayList<Item>();
 
         try {
-            Document resp = Cloudy.listItems(Schema.PATH);
+            Document resp = Cloudy.listItems(env.getCloudSchemaPath());
 
             Item item;
             for (Element elm : resp.getRootElement().getChildren(ITEM, Cloudy.NS))
             {
-                item = new Item();
+                item = new Item(env);
                 item.setId(Integer.parseInt(elm.getChild(ITEM_ID, Cloudy.NS).getText()));
                 item.setName(elm.getChild(ITEM_NAME, Cloudy.NS).getText());
                 item.setUrl(elm.getChild(ITEM_URL, Cloudy.NS).getText());
@@ -97,5 +97,10 @@ public class ItemList
         {
             e.printStackTrace();
         }
+    }
+
+    public void setEnv(Environment e)
+    {
+        env = e;
     }
 }

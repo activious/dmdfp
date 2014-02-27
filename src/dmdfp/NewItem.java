@@ -4,13 +4,16 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
+import javax.faces.context.FacesContext;
+import java.io.Serializable;
 
 /**
  * Created by khk on 2/21/14.
  */
 @ManagedBean
 @RequestScoped
-public class NewItem {
+public class NewItem implements Serializable
+{
     @ManagedProperty("#{itemList}")
     private ItemList items;
 
@@ -19,8 +22,9 @@ public class NewItem {
     @PostConstruct
     public void init()
     {
-
-        items.setCurrentItem(new Item());
+        FacesContext ctx = FacesContext.getCurrentInstance();
+        Item item = ctx.getApplication().evaluateExpressionGet(ctx, "#{item}", Item.class);
+        items.setCurrentItem(item);
     }
 
     public ItemList getItems() {

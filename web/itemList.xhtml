@@ -12,7 +12,7 @@
         </div>
         <div>
             <c:if test="${manager.isUserAdmin()}">
-            <h:link outcome="createitem" value="Create new item"/>
+            <h:link outcome="createItem" value="Create new item"/>
             </c:if>
         </div>
         <div id="product-grid">
@@ -42,10 +42,10 @@
                         </div>
                     </div>
                     <c:if test="${manager.isUserAdmin()}">
-                        <h:link value="Modify" outcome="modifyitem">
+                        <h:link value="Modify" outcome="modifyItem">
                             <f:param name="itemId" value="#{item.id}"/>
                         </h:link><br />
-                        <h:link value="Adjust" outcome="adjustitem">
+                        <h:link value="Adjust" outcome="adjustItem">
                             <f:param name="itemId" value="#{item.id}"/>
                         </h:link>
                     </c:if>

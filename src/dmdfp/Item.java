@@ -1,6 +1,5 @@
 package dmdfp;
 
-import dk.au.cs.dwebtek.Validator;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.input.SAXBuilder;
@@ -8,24 +7,18 @@ import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 import org.jdom2.transform.XSLTransformer;
 
-import javax.annotation.PostConstruct;
-import javax.faces.application.Application;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.SessionScoped;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpSession;
-import java.io.*;
-import java.util.List;
+import javax.faces.bean.RequestScoped;
+import java.io.ByteArrayInputStream;
+import java.io.Serializable;
 
 /**
  * Created by khk on 2/21/14.
  */
 @ManagedBean
-@SessionScoped
-public class Item
+@RequestScoped
+public class Item implements Serializable
 {
     private int id;
     private String name;
@@ -33,6 +26,16 @@ public class Item
     private int price;
     private int stock;
     private Document description;
+
+    @ManagedProperty("#{env}")
+    private Environment env;
+
+    public Item() {}
+
+    public Item(Environment e)
+    {
+        env = e;
+    }
 
     public int getId()
     {
@@ -90,6 +93,7 @@ public class Item
         }
         catch (Exception e)
         {
+            e.printStackTrace();
             return null;
         }
     }
@@ -98,25 +102,17 @@ public class Item
     {
         try
         {
-            XSLTransformer tr = new XSLTransformer(Schema.XSL);
-
-            //Helper.printXML(description);
+            XSLTransformer tr = new XSLTransformer(
+                    env.getItemDescriptionStylesheet());
 
             Document doc = tr.transform(description);
-
-            if (doc == null)
-                System.out.println("Doc is null!");
-            else
-            {
-                //System.out.println(">>> TRANSFORMED DOCUMENT:");
-                //Helper.printXML(doc);
-            }
 
             return new XMLOutputter(Format.getPrettyFormat())
                     .outputString(doc.getRootElement());
         }
         catch (Exception e)
         {
+            e.printStackTrace();
             return null;
         }
     }
@@ -144,5 +140,10 @@ public class Item
         {
             e.printStackTrace();
         }
+    }
+
+    public void setEnv(Environment e)
+    {
+        env = e;
     }
 }

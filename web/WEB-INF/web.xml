@@ -24,7 +24,7 @@
         </auth-constraint>
     </security-constraint>
     <welcome-file-list>
-        <welcome-file>itemlist.jsf</welcome-file>
+        <welcome-file>itemList.jsf</welcome-file>
     </welcome-file-list>
     <context-param>
         <param-name>facelets.LIBRARIES</param-name>
