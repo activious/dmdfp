@@ -17,7 +17,7 @@ public class Authorization
         return loggedIn;
     }
 
-    // Test
+    // Test 1
     public void setLoggedIn(boolean value)
     {
         loggedIn = value;
