@@ -12,20 +12,20 @@
         </div>
         <div>
             <c:if test="${manager.isUserAdmin()}">
-            <h:link outcome="createItem" value="Create new item"/>
+            <h:link outcome="/admin/createItem" value="Create new item"/>
             </c:if>
         </div>
         <div id="product-grid">
             <c:forEach var="item" items="#{itemList.items}">
                 <div class="product">
                     Item ID: #{item.id}<br />
-                    <h:link outcome="item" styleClass="product-image">
+                    <h:link outcome="/admin/viewItem" styleClass="product-image">
                         <f:param name="itemId" value="#{item.id}"/>
                         <h:graphicImage url="#{item.url}" alt="#{item.name}"/>
                     </h:link>
                     <div class="product-info">
                         <div class="product-name">
-                            <h:link outcome="item" value="#{item.name}">
+                            <h:link outcome="/admin/viewItem" value="#{item.name}">
                                 <f:param name="itemId" value="#{item.id}"/>
                             </h:link>
                         </div>
@@ -42,10 +42,10 @@
                         </div>
                     </div>
                     <c:if test="${manager.isUserAdmin()}">
-                        <h:link value="Modify" outcome="modifyItem">
+                        <h:link value="Modify" outcome="/admin/modifyItem">
                             <f:param name="itemId" value="#{item.id}"/>
                         </h:link><br />
-                        <h:link value="Adjust" outcome="adjustItem">
+                        <h:link value="Adjust" outcome="/admin/adjustItem">
                             <f:param name="itemId" value="#{item.id}"/>
                         </h:link>
                     </c:if>

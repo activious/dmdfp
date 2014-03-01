@@ -9,11 +9,7 @@ import java.io.IOException;
 /**
  * Created by khk on 2/20/14.
  */
-@WebFilter({"/login.jsf",
-            "/logout.jsf",
-            "/modifyItem.jsf",
-            "/adjustItem.jsf",
-            "/createItem.jsf"})
+@WebFilter("/admin/*")
 public class AuthorizationFilter implements Filter
 {
     @Override
@@ -31,6 +27,8 @@ public class AuthorizationFilter implements Filter
         HttpServletResponse resp = (HttpServletResponse) servletResponse;
         Authorization auth = (Authorization) req.getSession().getAttribute("auth");
 
+        String path = req.getServletPath();
+
         if (auth != null && auth.isLoggedIn())
         {
             /**
@@ -38,26 +36,27 @@ public class AuthorizationFilter implements Filter
              * If user is logging out, redirect to front page.
              * Otherwise continue request as is.
              */
-            switch (req.getServletPath())
+            switch (path)
             {
-                case "/login.jsf":
-                    resp.sendRedirect(req.getContextPath() + "/");
-                    break;
-                case "/logout.jsf":
+                case "/admin/login.jsf":
+                    redir(req, resp, "/admin/itemList.jsf");
+                    return;
+                case "/admin/logout.jsf":
                     req.getSession().invalidate();
                     auth.setLoggedIn(false);
-                    resp.sendRedirect(req.getContextPath() + "/");
-                    break;
+                    redir(req, resp, "/admin/itemList.jsf");
+                    return;
                 default:
                     filterChain.doFilter(servletRequest, servletResponse);
             }
         }
-        else if (!req.getServletPath().equals("/login.jsf"))
+        else if (!path.equals("/admin/login.jsf"))
         {
             /**
              * User is not logged in, redirect to login page.
              */
-            resp.sendRedirect(req.getContextPath() + "/login.jsf");
+            redir(req, resp, "/admin/login.jsf");
+            return;
         }
         else
         {
@@ -71,5 +70,13 @@ public class AuthorizationFilter implements Filter
     @Override
     public void destroy()
     {
+    }
+
+    private void redir(HttpServletRequest req,
+                       HttpServletResponse resp,
+                       String path)
+            throws IOException
+    {
+        resp.sendRedirect(req.getContextPath() + path);
     }
 }

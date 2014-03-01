@@ -5,10 +5,30 @@
                              http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
          version="3.0">
     <display-name>dmdFP</display-name>
+
+    <!-- JAX-RS shop servlet -->
+    <!-- Tomcat only looks for annotated classes in WEB-INF/classes. Jersey is in a .jar file -->
+    <!--<servlet>
+        <servlet-name>jersey-servlet</servlet-name>
+        <servlet-class>
+            org.glassfish.jersey.servlet.ServletContainer
+        </servlet-class>
+        <init-param>
+            <param-name>jersey.config.server.provider.packages</param-name>
+            <param-value>dmdfp</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>jersey-servlet</servlet-name>
+        <url-pattern>/rest/*</url-pattern>
+    </servlet-mapping>-->
+
+    <!-- JSF admin servlet -->
     <servlet>
         <servlet-name>Faces Servlet</servlet-name>
         <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
+        <load-on-startup>2</load-on-startup>
     </servlet>
     <servlet-mapping>
         <servlet-name>Faces Servlet</servlet-name>
@@ -24,10 +44,15 @@
         </auth-constraint>
     </security-constraint>
     <welcome-file-list>
-        <welcome-file>itemList.jsf</welcome-file>
+        <welcome-file>admin/itemList.jsf</welcome-file>
     </welcome-file-list>
+
     <context-param>
         <param-name>facelets.LIBRARIES</param-name>
         <param-value>/WEB-INF/dmdfp.taglib.xml</param-value>
+    </context-param>
+    <context-param>
+        <param-name>javax.faces.PROJECT_STAGE</param-name>
+        <param-value>Development</param-value>
     </context-param>
 </web-app>
