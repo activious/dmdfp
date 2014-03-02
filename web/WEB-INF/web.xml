@@ -8,21 +8,24 @@
 
     <!-- JAX-RS shop servlet -->
     <!-- Tomcat only looks for annotated classes in WEB-INF/classes. Jersey is in a .jar file -->
-    <!--<servlet>
+    <servlet>
         <servlet-name>jersey-servlet</servlet-name>
         <servlet-class>
             org.glassfish.jersey.servlet.ServletContainer
         </servlet-class>
         <init-param>
             <param-name>jersey.config.server.provider.packages</param-name>
-            <param-value>dmdfp</param-value>
+            <param-value>dmdfp.shop</param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
         <servlet-name>jersey-servlet</servlet-name>
         <url-pattern>/rest/*</url-pattern>
-    </servlet-mapping>-->
+    </servlet-mapping>
+    <welcome-file-list>
+        <welcome-file>shop/template.html</welcome-file>
+    </welcome-file-list>
 
     <!-- JSF admin servlet -->
     <servlet>
@@ -43,12 +46,9 @@
             <description>Prevents access to source files</description>
         </auth-constraint>
     </security-constraint>
-    <welcome-file-list>
-        <welcome-file>admin/itemList.jsf</welcome-file>
-    </welcome-file-list>
 
     <context-param>
-        <param-name>facelets.LIBRARIES</param-name>
+        <param-name>javax.faces.FACELETS_LIBRARIES</param-name>
         <param-value>/WEB-INF/dmdfp.taglib.xml</param-value>
     </context-param>
     <context-param>

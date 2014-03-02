@@ -1,4 +1,4 @@
-package dmdfp;
+package dmdfp.share;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ApplicationScoped;
@@ -15,18 +15,38 @@ import java.nio.file.Paths;
 @ApplicationScoped
 public class Environment implements Serializable
 {
-    private Path cloudSchemaPath;
+    private static final String
+            RESOURCES = "/resources",
+            CLOUD_SCHEMA = "/cloud.xsd",
+            ITEM_DESC_STYLE = "/itemDescription.xsl";
 
+    private Path cloudSchemaPath;
     private String itemDescriptionStylesheet;
 
+    /**
+     * JSF construct
+     */
+    public Environment() {}
+
+    /**
+     * JSF init
+     */
     @PostConstruct
     public void init()
     {
         FacesContext ctx = FacesContext.getCurrentInstance();
-        String rootPath = ctx.getExternalContext().getRealPath("/");
+        setBasePath(ctx.getExternalContext().getRealPath("/"));
+    }
 
-        cloudSchemaPath = Paths.get(rootPath + "/resources/cloud.xsd");
-        itemDescriptionStylesheet = rootPath + "/resources/itemDescription.xsl";
+    public Environment(String basePath)
+    {
+        setBasePath(basePath);
+    }
+
+    private void setBasePath(String basePath)
+    {
+        cloudSchemaPath = Paths.get(basePath + RESOURCES + CLOUD_SCHEMA);
+        itemDescriptionStylesheet = basePath + RESOURCES + ITEM_DESC_STYLE;
     }
 
     public Path getCloudSchemaPath()

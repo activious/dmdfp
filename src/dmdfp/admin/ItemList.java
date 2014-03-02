@@ -1,5 +1,7 @@
-package dmdfp;
+package dmdfp.admin;
 
+import dmdfp.share.Cloudy;
+import dmdfp.share.Environment;
 import org.jdom2.Document;
 import org.jdom2.Element;
 
@@ -7,7 +9,6 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.context.FacesContext;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;

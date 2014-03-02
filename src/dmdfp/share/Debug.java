@@ -1,4 +1,4 @@
-package dmdfp;
+package dmdfp.share;
 
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -8,7 +8,7 @@ import org.jdom2.output.XMLOutputter;
 /**
  * Created by khk on 2/21/14.
  */
-public class Helper
+public class Debug
 {
     public static void printXML(Document doc)
     {

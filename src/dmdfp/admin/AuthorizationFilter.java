@@ -1,4 +1,4 @@
-package dmdfp;
+package dmdfp.admin;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
@@ -38,13 +38,16 @@ public class AuthorizationFilter implements Filter
              */
             switch (path)
             {
+                case "/admin/":
+                    redir(req, resp, "/admin/listItems.jsf");
+                    return;
                 case "/admin/login.jsf":
-                    redir(req, resp, "/admin/itemList.jsf");
+                    redir(req, resp, "/admin/listItems.jsf");
                     return;
                 case "/admin/logout.jsf":
                     req.getSession().invalidate();
                     auth.setLoggedIn(false);
-                    redir(req, resp, "/admin/itemList.jsf");
+                    redir(req, resp, "/admin/listItems.jsf");
                     return;
                 default:
                     filterChain.doFilter(servletRequest, servletResponse);

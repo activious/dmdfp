@@ -1,7 +1,7 @@
-package dmdfp;
+package dmdfp.admin;
 
-import org.jdom2.Document;
-import org.jdom2.Element;
+import dmdfp.share.Cloudy;
+import dmdfp.share.Environment;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;

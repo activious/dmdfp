@@ -1,5 +1,6 @@
-package dmdfp;
+package dmdfp.admin;
 
+import dmdfp.share.Environment;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.input.SAXBuilder;

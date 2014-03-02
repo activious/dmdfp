@@ -1,9 +1,11 @@
-package dmdfp;
+package dmdfp.admin;
+
+import dmdfp.share.Cloudy;
+import dmdfp.share.Environment;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
-import javax.faces.context.FacesContext;
 import java.io.Serializable;
 
 /**

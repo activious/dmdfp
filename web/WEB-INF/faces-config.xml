@@ -9,7 +9,7 @@
         <from-view-id>/admin/login.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>SUCCESS</from-outcome>
-            <to-view-id>/admin/itemList.xhtml</to-view-id>
+            <to-view-id>/admin/listItems.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
         <navigation-case>
@@ -20,19 +20,19 @@
     <navigation-rule>
         <from-view-id>/admin/modifyItem.xhtml</from-view-id>
         <navigation-case>
-            <to-view-id>/admin/itemList.xhtml</to-view-id>
+            <to-view-id>/admin/listItems.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
     <navigation-rule>
         <from-view-id>/admin/adjustItem.xhtml</from-view-id>
         <navigation-case>
-            <to-view-id>/admin/itemList.xhtml</to-view-id>
+            <to-view-id>/admin/listItems.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
     <navigation-rule>
         <from-view-id>/admin/createItem.xhtml</from-view-id>
         <navigation-case>
-            <to-view-id>/admin/itemList.xhtml</to-view-id>
+            <to-view-id>/admin/listItems.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
 </faces-config>
