@@ -1,6 +1,7 @@
 package dmdfp.share;
 
 import dk.au.cs.dwebtek.Validator;
+import dmdfp.shop.SaleStatus;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -26,6 +27,8 @@ public class Cloudy
         POST = "POST",
         CREATE_ITEM = "createItem",
         MODIFY_ITEM = "modifyItem",
+        SELL_ITEM ="sellItems",
+        SALE_AMOUNT = "saleAmount",
         LIST_ITEMS = "listItems",
         ADJUST_ITEM_STOCK = "adjustItemStock",
         ADJUSTMENT = "adjustment",
@@ -98,6 +101,22 @@ public class Cloudy
                     createCustomer(args[1], args[2], xsd);
                     break;
                 }
+                case SELL_ITEM:
+                {
+                    if (args.length <5)
+                    {
+                        errorNEA();
+                        return;
+                    }
+                    Path xsd = Paths.get(args[4]);
+
+                    if (!validatePaths(xsd))
+                        return;
+
+                    sellItems(Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]), xsd);
+                    break;
+                }
+
                 case MODIFY_ITEM:
                 {
                     if (args.length < 3)
@@ -386,6 +405,36 @@ public class Cloudy
         closeCon(con);
 
         return (respCode == 200);
+    }
+
+    public static Enum sellItems(int itemId,
+                                   int customerID,
+                                   int saleAmount,
+                                   Path schema)
+            throws IOException, JDOMException
+    {
+        Document doc = newReq(SELL_ITEM);
+        Element root = doc.getRootElement();
+
+        appendTextElement(root, ITEM_ID, String.valueOf(itemId));
+        appendTextElement(root, CUSTOMER_ID, String.valueOf(customerID));
+        appendTextElement(root, SALE_AMOUNT, String.valueOf(saleAmount));
+
+        HttpURLConnection con = openCon(SELL_ITEM, POST);
+        int respCode = send(doc, con);
+        Document resp = Validator.readAndValidateXML(
+                con.getInputStream(), schema);
+        closeCon(con);
+        if (interactive)
+        {
+            printResponse(resp);
+        }
+        String name = resp.getRootElement().getChildren().get(0).getName();
+        switch (name) {
+            case "ok": return SaleStatus.OK;
+            case "itemSoldOut": return SaleStatus.SOLD_OUT;
+            default: return SaleStatus.ERROR;
+        }
     }
 
     public static Document listItems(Path schema)
