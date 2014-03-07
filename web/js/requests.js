@@ -50,17 +50,19 @@ function listItems()
     });
 }
 
-function createCustomer(username, password) {
-    ajaxPost("/dmdfp/rest/shop/createCustomer", {username:username, password:password}, function(resp) {
-        var message = $("#message-box");
-
-        if (resp == -1) {
-            message.text("Username already taken")
-        } else {
-            message.text(resp)
-        }
-
-    });
-
-
+function createCustomer() {
+    var username = $("#username").val();
+    var password = $("#password").val();
+    var message = $("#message-box");
+    if (3 <= username.length && username.length <= 20 && 2<=password.length && password.length <= 20) {
+        ajaxPost("/dmdfp/rest/shop/createCustomer", {username:username, password:password}, function(resp) {
+            if (resp == -1) {
+                message.text("Username already taken")
+            } else {
+                message.text(resp)
+            }
+        });
+    } else {
+        message.text("Username or Password too long or too short!")
+    }
 }
