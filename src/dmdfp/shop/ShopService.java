@@ -51,9 +51,6 @@ public class ShopService
             BASKET = "basket";
 
     @Context
-    HttpSession session;
-
-    @Context
     ServletContext context;
 
     Environment env;
@@ -82,7 +79,7 @@ public class ShopService
         cloud = (Cloudy) context.getAttribute(CLOUDY);
     }
 
-    private Basket getBasket()
+    private Basket getBasket(HttpSession session)
     {
         Object basket = session.getAttribute(BASKET);
 
@@ -95,7 +92,7 @@ public class ShopService
         return (Basket) basket;
     }
 
-    private Customer getCustomer()
+    private Customer getCustomer(HttpSession session)
     {
         Object customer = session.getAttribute(CUSTOMER);
 
@@ -107,7 +104,8 @@ public class ShopService
 
     @POST
     @Path("login")
-    public boolean login(@FormParam("username") String username,
+    public boolean login(@Context HttpSession session,
+                         @FormParam("username") String username,
                          @FormParam("password") String password)
     {
         try
@@ -130,7 +128,7 @@ public class ShopService
 
     @GET
     @Path("logout")
-    public boolean logout()
+    public boolean logout(@Context HttpSession session)
     {
         session.invalidate();
         return true;
@@ -138,24 +136,26 @@ public class ShopService
 
     @POST
     @Path("addItemToBasket")
-    public void addItemToBasket(@FormParam("itemId") int itemId)
+    public void addItemToBasket(@Context HttpSession session,
+                                @FormParam("itemId") int itemId)
     {
-        getBasket().addItem(itemId, 1);
+        getBasket(session).addItem(itemId, 1);
     }
 
     @POST
     @Path("adjustAmount")
-    public void adjustAmount(@FormParam("itemId") int itemId,
+    public void adjustAmount(@Context HttpSession session,
+                             @FormParam("itemId") int itemId,
                              @FormParam("amount") int amount)
     {
-        getBasket().adjustItemAmount(itemId, amount);
+        getBasket(session).adjustItemAmount(itemId, amount);
     }
 
     @POST
     @Path("sellItems")
-    public void sellItems()
+    public void sellItems(@Context HttpSession session)
     {
-        List<BasketItem> items = getBasket().getItems();
+        List<BasketItem> items = getBasket(session).getItems();
 
         try
         {
@@ -163,7 +163,7 @@ public class ShopService
             {
                 cloud.sellItem(
                         item.getItemId(),
-                        getCustomer().getId(),
+                        getCustomer(session).getId(),
                         item.getAmount());
             }
         }
@@ -175,13 +175,18 @@ public class ShopService
 
     @POST
     @Path("createCustomer")
-    public int createCustomer(@FormParam("username") String username,
-                               @FormParam("password") String password)
+    public int createCustomer(@Context HttpSession session,
+                              @FormParam("username") String username,
+                              @FormParam("password") String password)
     {
-        System.out.println(username);
-        System.out.println(password);
         try {
             int resp = cloud.createCustomer(username, password);
+
+            if (resp != -1)
+            {
+                login(session, username, password);
+            }
+
             return resp;
         } catch (IOException e) {
             e.printStackTrace();
