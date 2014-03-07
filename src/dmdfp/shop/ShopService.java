@@ -15,7 +15,9 @@ import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import java.io.IOException;
 import java.net.URI;
@@ -53,6 +55,8 @@ public class ShopService
 
     Environment env;
 
+    Basket basket;
+
     @PostConstruct
     public void init()
     {
@@ -64,6 +68,30 @@ public class ShopService
         }
 
         env = (Environment) context.getAttribute(ENV);
+
+        basket = new Basket();
+    }
+
+    @POST
+    @Path("addItemToBasket")
+    public void addItemToBasket(@QueryParam("itemId") int itemId)
+    {
+        basket.addItem(itemId, 1);
+    }
+
+    @POST
+    @Path("adjustAmount")
+    public void adjustAmount(@QueryParam("itemId") int itemId,
+                             @QueryParam("amount") int amount)
+    {
+        basket.adjustItemAmount(itemId, amount);
+    }
+
+    @POST
+    @Path("createCustomer")
+    public void createCustomer(@QueryParam("username") String username,
+                               @QueryParam("password") String password)
+    {
     }
 
     @GET
