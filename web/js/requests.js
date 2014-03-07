@@ -50,7 +50,9 @@ function listItems()
     });
 }
 
-function createCustomer(username, password) {
+function createCustomer() {
+    var username = $("#username").val();
+    var password = $("#password").val();
     ajaxPost("/dmdfp/rest/shop/createCustomer", {username:username, password:password}, function(resp) {
         var message = $("#message-box");
 
