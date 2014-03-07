@@ -44,6 +44,11 @@ function listItems()
                 '<div class="product-price">DKK %d</div>',
                 item.price
             )));
+            // Buy Item
+            info.append($(sprintf(
+                '<div class="product-buy"> <form><button type="button" onclick="addItemToBasket(%d)">Buy</button></form> </div>',
+                item.id
+            )));
 
             grid.append(container);
         }
@@ -56,8 +61,9 @@ function login() {
     var message = $("#message-box");
     if (3 <= username.length && username.length <= 20 && 2<=password.length && password.length <= 20) {
         ajaxPost("/dmdfp/rest/shop/login", {username:username, password:password}, function(resp) {
-            if (resp) {
-                message.text("Success")
+            if (resp == "true") {
+                message.text("Success");
+                $("#login-box").hide();
             } else {
                 message.text("Wrong password and/or username")
             }
@@ -73,12 +79,31 @@ function createCustomer() {
     if (3 <= username.length && username.length <= 20 && 2<=password.length && password.length <= 20) {
         ajaxPost("/dmdfp/rest/shop/createCustomer", {username:username, password:password}, function(resp) {
             if (resp == -1) {
-                message.text("Username already taken")
+                message.text("Username already taken");
             } else {
-                message.text(resp)
+                message.text("Congratulation your user er now created. Your userID is "+ resp +" and your username is "+ username);
+                $("#login-box").slideUp();
             }
         });
     } else {
-        message.text("Username or Password too long or too short!")
+        message.text("Username or Password too long or too short!");
     }
+}
+
+function updateBasket() {
+    ajaxGet("/dmdfp/rest/shop/getBasketItems", function(resp) {
+        var items = JSON.parse(resp);
+        basket.setItems(items);
+    });
+}
+
+function addItemToBasket(itemId) {
+    ajaxPost("/dmdfp/rest/shop/addItemToBasket", {itemId:itemId}, function(resp){
+        basket.addItem(itemId);
+    });
+}
+
+function checkout() {
+
+
 }

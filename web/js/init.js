@@ -1,12 +1,17 @@
 /**
  * Created by khk on 3/2/14.
  */
+var basket;
+
 $(function() {
     $.when(
         $.getScript("/dmdfp/js/sprintf.min.js"),
-        $.getScript("/dmdfp/js/requests.js")
+        $.getScript("/dmdfp/js/requests.js"),
+        $.getScript("/dmdfp/js/basket.js")
     ).done(function() {
         listItems();
+        basket = new Basket();
+        updateBasket();
     });
 
     /*$(document)

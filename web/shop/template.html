@@ -18,7 +18,7 @@
             <ul id="basket" class="link-list">
                 <li><a href="#" id="login-link">Login</a></li>
                 <li><a href="#" id="basket-link">My basket</a></li>
-                <li><a href="#" id="checkout-link">Checkout</a></li>
+                <li><a href="#" id="checkout-link" onclick="checkout()">Checkout</a></li>
             </ul>
             <div id="login-box">
                 <form>
@@ -26,7 +26,7 @@
                     <input id="username" type="text" name="username" />
                     <label for="password">Password:</label>
                     <input id="password" type="password" name="password" />
-                    <button type="button" onclick="">Login</button>
+                    <button type="button" onclick="login()">Login</button>
                     <button id="signUp" type="button" onclick="createCustomer()">Sign up</button>
                 </form>
             </div>

@@ -5,7 +5,15 @@ function Basket()
 
 Basket.prototype.addItem = function(itemId)
 {
+    for (var i = 0; i < this.items.length; i++) {
+        if (itemId == this.items[i].id) {
+            this.items[i].amount++;
+            this.updateDisplay();
+            return;
+        }
+    }
     this.items.push({ id: itemId, amount: 1 });
+    this.updateDisplay();
 }
 
 Basket.prototype.removeItem = function(itemId)
@@ -33,7 +41,7 @@ Basket.prototype.getSize = function()
 Basket.prototype.updateDisplay = function()
 {
     var list = $("#basket-list");
-
+    list.empty();
     for (var i = 0; i < this.items.length; i++)
     {
         var item = this.items[i];

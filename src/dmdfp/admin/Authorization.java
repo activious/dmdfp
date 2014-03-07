@@ -41,7 +41,7 @@ public class Authorization implements Serializable
     {
         try
         {
-            if (cloud.login(user.getUsername(), user.getPassword()))
+            if (-1 != cloud.login(user.getUsername(), user.getPassword()))
             {
                 setLoggedIn(true);
                 return SUCCESS;
