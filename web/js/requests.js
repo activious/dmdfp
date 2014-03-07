@@ -52,6 +52,13 @@ function listItems()
 
 function createCustomer(username, password) {
     ajaxPost("/dmdfp/rest/shop/createCustomer", {username:username, password:password}, function(resp) {
+        var message = $("#message-box");
+
+        if (resp == -1) {
+            message.text("Username already taken")
+        } else {
+            message.text(resp)
+        }
 
     });
 

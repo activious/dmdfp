@@ -14,10 +14,7 @@ import org.json.JSONObject;
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import java.io.IOException;
 import java.net.URI;
@@ -125,17 +122,22 @@ public class ShopService
 
     @POST
     @Path("createCustomer")
-    public void createCustomer(@QueryParam("username") String username,
-                               @QueryParam("password") String password)
+    public int createCustomer(@FormParam("username") String username,
+                               @FormParam("password") String password)
     {
+        System.out.println(username);
+        System.out.println(password);
+        JSONObject obj = new JSONObject();
         try {
-            Document resp = Cloudy.createCustomer(username, password);
-
+            int resp = cloud.createCustomer(username, password);
+            return resp;
         } catch (IOException e) {
             e.printStackTrace();
         } catch (JDOMException e) {
             e.printStackTrace();
         }
+
+      return -1;
     }
 
     @GET
