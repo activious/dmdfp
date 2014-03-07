@@ -3,6 +3,7 @@ package dmdfp.admin;
 import dmdfp.share.Cloudy;
 import dmdfp.share.Environment;
 
+import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
@@ -35,6 +36,15 @@ public class Manager implements Serializable
 
     @ManagedProperty("#{env}")
     private Environment env;
+
+    private Cloudy cloud;
+
+    @PostConstruct
+    public void init()
+    {
+        cloud = new Cloudy();
+        cloud.setSchemaPath(env.getCloudSchemaPath());
+    }
 
     public int getStockAdjustment() {
         return stockAdjustment;
@@ -72,12 +82,11 @@ public class Manager implements Serializable
         Item item = items.getCurrentItem();
 
         try {
-            Cloudy.createItem(
+            cloud.createItem(
                     item.getName(),
                     item.getUrl(),
                     item.getPrice(),
-                    item.getDescription(),
-                    env.getCloudSchemaPath());
+                    item.getDescription());
 
             items.listItems();
             return SUCCESS;
@@ -93,7 +102,7 @@ public class Manager implements Serializable
         Item item = items.getCurrentItem();
 
         try {
-            Cloudy.modifyItem(
+            cloud.modifyItem(
                     item.getId(),
                     item.getName(),
                     item.getUrl(),
@@ -113,7 +122,7 @@ public class Manager implements Serializable
         Item item = items.getCurrentItem();
 
         try {
-            Cloudy.adjustItemStock(item.getId(), stockAdjustment);
+            cloud.adjustItemStock(item.getId(), stockAdjustment);
             item.setStock(item.getStock() + stockAdjustment);
             return SUCCESS;
         }

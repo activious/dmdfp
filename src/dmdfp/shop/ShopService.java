@@ -32,6 +32,7 @@ public class ShopService
 {
     private static final String
             ENV = "env",
+            CLOUDY = "cloudy",
             DOCUMENT = "document",
             ITEM = "item",
             ITEM_ID = "itemID",
@@ -55,6 +56,8 @@ public class ShopService
 
     Environment env;
 
+    Cloudy cloud;
+
     Basket basket;
 
     @PostConstruct
@@ -68,6 +71,15 @@ public class ShopService
         }
 
         env = (Environment) context.getAttribute(ENV);
+
+        if (context.getAttribute(CLOUDY) == null)
+        {
+            Cloudy cl = new Cloudy();
+            cl.setSchemaPath(env.getCloudSchemaPath());
+            context.setAttribute(CLOUDY, cl);
+        }
+
+        cloud = (Cloudy) context.getAttribute(CLOUDY);
 
         basket = new Basket();
     }
@@ -100,7 +112,7 @@ public class ShopService
     {
         try
         {
-            Document resp = Cloudy.listItems(env.getCloudSchemaPath());
+            Document resp = cloud.listItems();
             List<Element> children = resp.getRootElement().getChildren(ITEM, Cloudy.NS);
 
             JSONArray arr = new JSONArray();
