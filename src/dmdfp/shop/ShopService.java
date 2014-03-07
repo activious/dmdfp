@@ -103,7 +103,6 @@ public class ShopService
     {
         System.out.println(username);
         System.out.println(password);
-        JSONObject obj = new JSONObject();
         try {
             int resp = cloud.createCustomer(username, password);
             return resp;

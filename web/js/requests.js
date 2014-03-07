@@ -50,6 +50,22 @@ function listItems()
     });
 }
 
+function login() {
+    var username = $("#username").val();
+    var password = $("#password").val();
+    var message = $("#message-box");
+    if (3 <= username.length && username.length <= 20 && 2<=password.length && password.length <= 20) {
+        ajaxPost("/dmdfp/rest/shop/login", {username:username, password:password}, function(resp) {
+            if (resp) {
+                message.text("Success")
+            } else {
+                message.text("Wrong password and/or username")
+            }
+        });
+        }
+    }
+
+
 function createCustomer() {
     var username = $("#username").val();
     var password = $("#password").val();
