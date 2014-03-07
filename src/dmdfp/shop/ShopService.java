@@ -92,6 +92,14 @@ public class ShopService
     public void createCustomer(@QueryParam("username") String username,
                                @QueryParam("password") String password)
     {
+        try {
+            int resp = Cloudy.createCustomer(username, password, env.getCloudSchemaPath());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        }
     }
 
     @GET

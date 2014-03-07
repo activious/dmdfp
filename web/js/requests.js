@@ -49,3 +49,11 @@ function listItems()
         }
     });
 }
+
+function createCustomer(username, password) {
+    ajaxPost("/dmdfp/rest/shop/createCustomer", {username:username, password:password}, function(resp) {
+
+    });
+
+
+}
