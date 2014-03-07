@@ -60,6 +60,8 @@ public class ShopService
 
     Basket basket;
 
+    Customer customer;
+
     @PostConstruct
     public void init()
     {
@@ -97,6 +99,28 @@ public class ShopService
                              @QueryParam("amount") int amount)
     {
         basket.adjustItemAmount(itemId, amount);
+    }
+
+    @POST
+    @Path("sellItems")
+    public void sellItems()
+    {
+        List<BasketItem> items = basket.getItems();
+
+        try
+        {
+            for (BasketItem item : items)
+            {
+                cloud.sellItem(
+                        item.getItemId(),
+                        customer.getId(),
+                        item.getAmount());
+            }
+        }
+        catch (IOException|JDOMException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     @POST

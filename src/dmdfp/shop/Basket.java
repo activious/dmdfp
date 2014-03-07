@@ -15,6 +15,10 @@ public class Basket
         items = new ArrayList<BasketItem>();
     }
 
+    public List<BasketItem> getItems() {
+        return items;
+    }
+
     public void addItem(int itemId, int amount)
     {
         BasketItem item = new BasketItem(itemId, amount);
