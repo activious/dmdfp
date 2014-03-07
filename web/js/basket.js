@@ -32,5 +32,11 @@ Basket.prototype.getSize = function()
 
 Basket.prototype.updateDisplay = function()
 {
+    var list = $("#basket-list");
 
+    for (var i = 0; i < this.items.length; i++)
+    {
+        var item = this.items[i];
+        list.append($(sprintf('<li>Item id: %d, amount: %d</li>', item.id, item.amount)));
+    }
 }
