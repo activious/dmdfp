@@ -331,7 +331,7 @@ public class Cloudy
         return (respCode == 200);
     }
 
-    public boolean login(String username, String password)
+    public int login(String username, String password)
             throws IOException, JDOMException
     {
         Element root = new Element(LOGIN, NS);
@@ -346,7 +346,7 @@ public class Cloudy
         if (respCode != 200)
         {
             closeCon(con);
-            return false;
+            return -1;
         }
 
         Document resp = Validator.readAndValidateXML(
@@ -359,7 +359,7 @@ public class Cloudy
             printResponse(resp);
         }
 
-        return true;
+        return Integer.parseInt(resp.getRootElement().getChild(CUSTOMER_ID, NS).getText());
     }
 
     public int createCustomer(String username, String password)

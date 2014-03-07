@@ -14,7 +14,10 @@ import org.json.JSONObject;
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
-import javax.ws.rs.*;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
 import java.io.IOException;
 import java.net.URI;
@@ -43,7 +46,9 @@ public class ShopService
             URL = "url",
             PRICE = "price",
             STOCK = "stock",
-            DESCRIPTION = "description";
+            DESCRIPTION = "description",
+            CUSTOMER = "customer",
+            BASKET = "basket";
 
     @Context
     HttpSession session;
@@ -54,10 +59,6 @@ public class ShopService
     Environment env;
 
     Cloudy cloud;
-
-    Basket basket;
-
-    Customer customer;
 
     @PostConstruct
     public void init()
@@ -79,30 +80,82 @@ public class ShopService
         }
 
         cloud = (Cloudy) context.getAttribute(CLOUDY);
+    }
 
-        basket = new Basket();
+    private Basket getBasket()
+    {
+        Object basket = session.getAttribute(BASKET);
+
+        if (basket == null)
+        {
+            basket = new Basket();
+            session.setAttribute(BASKET, basket);
+        }
+
+        return (Basket) basket;
+    }
+
+    private Customer getCustomer()
+    {
+        Object customer = session.getAttribute(CUSTOMER);
+
+        if (customer == null)
+            return null;
+        else
+            return (Customer) customer;
+    }
+
+    @POST
+    @Path("login")
+    public boolean login(@FormParam("username") String username,
+                         @FormParam("password") String password)
+    {
+        try
+        {
+            int custId = cloud.login(username, password);
+            if (custId != -1)
+            {
+                Customer customer = new Customer(custId, username);
+                session.setAttribute(CUSTOMER, customer);
+                return true;
+            }
+        }
+        catch (IOException|JDOMException e)
+        {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    @GET
+    @Path("logout")
+    public boolean logout()
+    {
+        session.invalidate();
+        return true;
     }
 
     @POST
     @Path("addItemToBasket")
-    public void addItemToBasket(@QueryParam("itemId") int itemId)
+    public void addItemToBasket(@FormParam("itemId") int itemId)
     {
-        basket.addItem(itemId, 1);
+        getBasket().addItem(itemId, 1);
     }
 
     @POST
     @Path("adjustAmount")
-    public void adjustAmount(@QueryParam("itemId") int itemId,
-                             @QueryParam("amount") int amount)
+    public void adjustAmount(@FormParam("itemId") int itemId,
+                             @FormParam("amount") int amount)
     {
-        basket.adjustItemAmount(itemId, amount);
+        getBasket().adjustItemAmount(itemId, amount);
     }
 
     @POST
     @Path("sellItems")
     public void sellItems()
     {
-        List<BasketItem> items = basket.getItems();
+        List<BasketItem> items = getBasket().getItems();
 
         try
         {
@@ -110,7 +163,7 @@ public class ShopService
             {
                 cloud.sellItem(
                         item.getItemId(),
-                        customer.getId(),
+                        getCustomer().getId(),
                         item.getAmount());
             }
         }

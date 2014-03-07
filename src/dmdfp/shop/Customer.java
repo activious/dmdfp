@@ -8,6 +8,12 @@ public class Customer
     private int id;
     private String name;
 
+    public Customer(int id, String name)
+    {
+        setId(id);
+        setName(name);
+    }
+
     public int getId() {
         return id;
     }
