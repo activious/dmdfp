@@ -27,7 +27,7 @@ public class Cloudy
         POST = "POST",
         CREATE_ITEM = "createItem",
         MODIFY_ITEM = "modifyItem",
-        SELL_ITEM ="sellItems",
+        SELL_ITEM ="sellItem",
         SALE_AMOUNT = "saleAmount",
         LIST_ITEMS = "listItems",
         ADJUST_ITEM_STOCK = "adjustItemStock",
@@ -43,7 +43,11 @@ public class Cloudy
         CUSTOMER_NAME = "customerName",
         CUSTOMER_PASS = "customerPass",
         CUSTOMER_ID = "customerID",
-        LOGIN = "login";
+        LOGIN = "login",
+        LIST_SHOPS = "listShops",
+        LIST_SHOP_SALES = "listShopSales",
+        LIST_CUSTOMERS = "listCustomers",
+        LIST_CUSTOMER_SALES = "listCustomerSales";
 
     public static final Namespace
         NS = Namespace.getNamespace("http://www.cs.au.dk/dWebTek/2014");
@@ -188,6 +192,70 @@ public class Cloudy
 
                     cloud.setSchemaPath(xsd);
                     cloud.listItems();
+                    break;
+                }
+                case LIST_SHOPS:
+                {
+                    if (args.length < 2)
+                    {
+                        errorNEA();
+                        return;
+                    }
+
+                    Path xsd = Paths.get(args[1]);
+                    if (!validatePaths(xsd))
+                        return;
+
+                    cloud.setSchemaPath(xsd);
+                    cloud.listShops();
+                    break;
+                }
+                case LIST_SHOP_SALES:
+                {
+                    if (args.length < 2)
+                    {
+                        errorNEA();
+                        return;
+                    }
+
+                    Path xsd = Paths.get(args[1]);
+                    if (!validatePaths(xsd))
+                        return;
+
+                    cloud.setSchemaPath(xsd);
+                    cloud.listShopSales();
+                    break;
+                }
+                case LIST_CUSTOMERS:
+                {
+                    if (args.length < 2)
+                    {
+                        errorNEA();
+                        return;
+                    }
+
+                    Path xsd = Paths.get(args[1]);
+                    if (!validatePaths(xsd))
+                        return;
+
+                    cloud.setSchemaPath(xsd);
+                    cloud.listCustomers();
+                    break;
+                }
+                case LIST_CUSTOMER_SALES:
+                {
+                    if (args.length < 3)
+                    {
+                        errorNEA();
+                        return;
+                    }
+
+                    Path xsd = Paths.get(args[2]);
+                    if (!validatePaths(xsd))
+                        return;
+
+                    cloud.setSchemaPath(xsd);
+                    cloud.listCustomerSales(Integer.parseInt(args[1]));
                     break;
                 }
                 default:
@@ -428,7 +496,7 @@ public class Cloudy
                          int saleAmount)
             throws IOException, JDOMException
     {
-        Document doc = newReq(SELL_ITEM);
+        Document doc = newReq(SELL_ITEM + "s"); // Cloud wants it plural
         Element root = doc.getRootElement();
 
         appendTextElement(root, ITEM_ID, String.valueOf(itemId));
@@ -456,6 +524,78 @@ public class Cloudy
             throws IOException, JDOMException
     {
         HttpURLConnection con = openCon(LIST_ITEMS + "?shopID=" + SHOP_ID);
+
+        Document resp = Validator.readAndValidateXML(
+                con.getInputStream(), schemaPath);
+
+        closeCon(con);
+
+        if (interactive)
+        {
+            printResponse(resp);
+        }
+
+        return resp;
+    }
+
+    public Document listShops()
+            throws IOException, JDOMException
+    {
+        HttpURLConnection con = openCon(LIST_SHOPS);
+
+        Document resp = Validator.readAndValidateXML(
+                con.getInputStream(), schemaPath);
+
+        closeCon(con);
+
+        if (interactive)
+        {
+            printResponse(resp);
+        }
+
+        return resp;
+    }
+
+    public Document listShopSales()
+            throws IOException, JDOMException
+    {
+        HttpURLConnection con = openCon(LIST_SHOP_SALES + "?shopKey=" + SHOP_KEY);
+
+        Document resp = Validator.readAndValidateXML(
+                con.getInputStream(), schemaPath);
+
+        closeCon(con);
+
+        if (interactive)
+        {
+            printResponse(resp);
+        }
+
+        return resp;
+    }
+
+    public Document listCustomers()
+            throws IOException, JDOMException
+    {
+        HttpURLConnection con = openCon(LIST_CUSTOMERS);
+
+        Document resp = Validator.readAndValidateXML(
+                con.getInputStream(), schemaPath);
+
+        closeCon(con);
+
+        if (interactive)
+        {
+            printResponse(resp);
+        }
+
+        return resp;
+    }
+
+    public Document listCustomerSales(int custId)
+            throws IOException, JDOMException
+    {
+        HttpURLConnection con = openCon(LIST_CUSTOMER_SALES + "?customerID=" + custId);
 
         Document resp = Validator.readAndValidateXML(
                 con.getInputStream(), schemaPath);
