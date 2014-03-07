@@ -391,6 +391,8 @@ public class Cloudy
         }
 
         Element custId = resp.getRootElement().getChild(CUSTOMER_ID, NS);
+
+        // If custId is null, we got a usernameTaken response. Return -1
         return (custId == null
                 ? -1
                 : Integer.parseInt(custId.getText()));
