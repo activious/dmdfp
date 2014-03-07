@@ -122,8 +122,8 @@ public class ShopService
 
     @POST
     @Path("createCustomer")
-    public int createCustomer(@FormParam("username") String username,
-                               @FormParam("password") String password)
+    public int createCustomer(@QueryParam("username") String username,
+                               @QueryParam("password") String password)
     {
         System.out.println(username);
         System.out.println(password);
