@@ -5,8 +5,7 @@ function Basket()
 
 Basket.prototype.addItem = function(itemId)
 {
-    var item = new BasketItem(itemId, 1);
-    this.items.push(item);
+    this.items.push({ id: itemId, amount: 1 });
 }
 
 Basket.prototype.removeItem = function(itemId)
@@ -21,8 +20,17 @@ Basket.prototype.removeItem = function(itemId)
     }
 }
 
-function BasketItem(itemId, amount)
+Basket.prototype.setItems = function(items)
 {
-    this.id = itemId;
-    this.amount = amount;
+    this.items = items;
+}
+
+Basket.prototype.getSize = function()
+{
+    return this.items.length;
+}
+
+Basket.prototype.updateDisplay = function()
+{
+
 }
