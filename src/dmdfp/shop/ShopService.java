@@ -49,7 +49,8 @@ public class ShopService
             STOCK = "stock",
             DESCRIPTION = "description",
             CUSTOMER = "customer",
-            BASKET = "basket";
+            BASKET = "basket",
+            AMOUNT = "amount";
 
     @Context
     ServletContext context;
@@ -101,6 +102,27 @@ public class ShopService
             return null;
         else
             return (Customer) customer;
+    }
+
+    @GET
+    @Path("getBasketItems")
+    public String getBasketItems(@Context HttpServletRequest request)
+    {
+        Basket basket = getBasket(request.getSession(true));
+
+        JSONArray arr = new JSONArray();
+        JSONObject obj;
+        for (BasketItem item : basket.getItems())
+        {
+            obj = new JSONObject();
+            obj.put(ID, item.getItemId());
+            obj.put(AMOUNT, item.getAmount());
+
+            arr.put(obj);
+        }
+
+        //TODO: You can create a MessageBodyWriter so you don't have to call toString() every time
+        return arr.toString();
     }
 
     @POST
