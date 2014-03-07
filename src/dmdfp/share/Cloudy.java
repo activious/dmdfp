@@ -50,6 +50,8 @@ public class Cloudy
 
     private static boolean interactive = false;
 
+    private Path schemaPath;
+
     public static void main(String[] args)
     {
         if (args.length == 0)
@@ -63,6 +65,8 @@ public class Cloudy
 
         try
         {
+            Cloudy cloud = new Cloudy();
+
             switch (req)
             {
                 case CREATE_ITEM:
@@ -82,7 +86,8 @@ public class Cloudy
                     Document doc = Validator.readAndValidateXML(
                             Files.newInputStream(xml), xsd);
 
-                    createItem(doc, xsd);
+                    cloud.setSchemaPath(xsd);
+                    cloud.createItem(doc);
                     break;
                 }
                 case CREATE_CUSTOMER:
@@ -98,7 +103,8 @@ public class Cloudy
                     if (!validatePaths(xsd))
                         return;
 
-                    createCustomer(args[1], args[2], xsd);
+                    cloud.setSchemaPath(xsd);
+                    cloud.createCustomer(args[1], args[2]);
                     break;
                 }
                 case SELL_ITEM:
@@ -113,7 +119,8 @@ public class Cloudy
                     if (!validatePaths(xsd))
                         return;
 
-                    sellItems(Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]), xsd);
+                    cloud.setSchemaPath(xsd);
+                    cloud.sellItem(Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]));
                     break;
                 }
 
@@ -134,7 +141,8 @@ public class Cloudy
                     Document doc = Validator.readAndValidateXML(
                             Files.newInputStream(xml), xsd);
 
-                    modifyItem(doc);
+                    cloud.setSchemaPath(xsd);
+                    cloud.modifyItem(doc);
                     break;
                 }
                 case LOGIN:
@@ -149,7 +157,8 @@ public class Cloudy
                     if (!validatePaths(xsd))
                         return;
 
-                    login(args[1], args[2], xsd);
+                    cloud.setSchemaPath(xsd);
+                    cloud.login(args[1], args[2]);
                     break;
                 }
                 case ADJUST_ITEM_STOCK:
@@ -160,7 +169,7 @@ public class Cloudy
                         return;
                     }
 
-                    adjustItemStock(
+                    cloud.adjustItemStock(
                             Integer.parseInt(args[1]),
                             Integer.parseInt(args[2]));
                     break;
@@ -177,7 +186,8 @@ public class Cloudy
                     if (!validatePaths(xsd))
                         return;
 
-                    listItems(xsd);
+                    cloud.setSchemaPath(xsd);
+                    cloud.listItems();
                     break;
                 }
                 default:
@@ -190,6 +200,14 @@ public class Cloudy
         {
             e.printStackTrace();
         }
+    }
+
+    public Path getSchemaPath() {
+        return schemaPath;
+    }
+
+    public void setSchemaPath(Path schemaPath) {
+        this.schemaPath = schemaPath;
     }
 
     private static boolean validatePaths(Path... paths)
@@ -229,7 +247,7 @@ public class Cloudy
         parent.addContent(elm);
     }
 
-    public static boolean adjustItemStock(int itemId, int adjustment)
+    public boolean adjustItemStock(int itemId, int adjustment)
             throws IOException, JDOMException
     {
         Document req = newReq(ADJUST_ITEM_STOCK);
@@ -245,7 +263,7 @@ public class Cloudy
         return (respCode == 200);
     }
 
-    public static boolean login(String username, String password, Path schema)
+    public boolean login(String username, String password)
             throws IOException, JDOMException
     {
         Element root = new Element(LOGIN, NS);
@@ -264,7 +282,7 @@ public class Cloudy
         }
 
         Document resp = Validator.readAndValidateXML(
-                con.getInputStream(), schema);
+                con.getInputStream(), schemaPath);
 
         closeCon(con);
 
@@ -276,7 +294,7 @@ public class Cloudy
         return true;
     }
 
-    public static int createCustomer(String username, String password, Path schema)
+    public int createCustomer(String username, String password)
             throws IOException, JDOMException
     {
         Document doc = newReq(CREATE_CUSTOMER);
@@ -295,7 +313,7 @@ public class Cloudy
         }
 
         Document resp = Validator.readAndValidateXML(
-                con.getInputStream(), schema);
+                con.getInputStream(), schemaPath);
 
         closeCon(con);
 
@@ -310,7 +328,7 @@ public class Cloudy
                 : Integer.parseInt(custId.getText()));
     }
 
-    public static int createItem(Document itemDoc, Path schema)
+    public int createItem(Document itemDoc)
             throws IOException, JDOMException
     {
         Element item = itemDoc.getRootElement();
@@ -319,15 +337,13 @@ public class Cloudy
                 item.getChild(ITEM_NAME).getText(),
                 item.getChild(ITEM_URL).getText(),
                 Integer.parseInt(item.getChild(ITEM_PRICE).getText()),
-                new Document(item.getChild(ITEM_DESCRIPTION).clone()),
-                schema);
+                new Document(item.getChild(ITEM_DESCRIPTION).clone()));
     }
 
-    public static int createItem(String itemName,
+    public int createItem(String itemName,
                                  String itemURL,
                                  int itemPrice,
-                                 Document itemDescription,
-                                 Path schema)
+                                 Document itemDescription)
             throws IOException, JDOMException
     {
         Document doc = newReq(CREATE_ITEM);
@@ -345,7 +361,7 @@ public class Cloudy
         }
 
         Document resp = Validator.readAndValidateXML(
-                con.getInputStream(), schema);
+                con.getInputStream(), schemaPath);
 
         closeCon(con);
 
@@ -368,7 +384,7 @@ public class Cloudy
         return itemId;
     }
     
-    public static boolean modifyItem(Document itemDoc)
+    public boolean modifyItem(Document itemDoc)
             throws IOException, JDOMException
     {
         Element item = itemDoc.getRootElement();
@@ -381,11 +397,11 @@ public class Cloudy
                 new Document(item.getChild(ITEM_DESCRIPTION).clone()));
     }
 
-    public static boolean modifyItem(int itemId,
-                                      String itemName,
-                                      String itemURL,
-                                      int itemPrice,
-                                      Document itemDescription)
+    public boolean modifyItem(int itemId,
+                              String itemName,
+                              String itemURL,
+                              int itemPrice,
+                              Document itemDescription)
             throws IOException, JDOMException
     {
         Document doc = newReq(MODIFY_ITEM);
@@ -407,10 +423,9 @@ public class Cloudy
         return (respCode == 200);
     }
 
-    public static Enum sellItems(int itemId,
-                                   int customerID,
-                                   int saleAmount,
-                                   Path schema)
+    public Enum sellItem(int itemId,
+                         int customerID,
+                         int saleAmount)
             throws IOException, JDOMException
     {
         Document doc = newReq(SELL_ITEM);
@@ -423,7 +438,7 @@ public class Cloudy
         HttpURLConnection con = openCon(SELL_ITEM, POST);
         int respCode = send(doc, con);
         Document resp = Validator.readAndValidateXML(
-                con.getInputStream(), schema);
+                con.getInputStream(), schemaPath);
         closeCon(con);
         if (interactive)
         {
@@ -437,13 +452,13 @@ public class Cloudy
         }
     }
 
-    public static Document listItems(Path schema)
+    public Document listItems()
             throws IOException, JDOMException
     {
         HttpURLConnection con = openCon(LIST_ITEMS + "?shopID=" + SHOP_ID);
 
         Document resp = Validator.readAndValidateXML(
-                con.getInputStream(), schema);
+                con.getInputStream(), schemaPath);
 
         closeCon(con);
 
@@ -553,6 +568,7 @@ public class Cloudy
         print("                modifyItem XML_FILE SCHEMA_FILE |");
         print("                adjustItemStock ITEM_ID ADJUSTMENT |");
         print("                login USERNAME PASSWORD SCHEMA_FILE |");
-        print("                listItems SCHEMA_FILE ]");
+        print("                listItems SCHEMA_FILE |");
+        print("                sellItem ITEM_ID CUSTOMER_ID AMOUNT SCHEMA_FILE ]");
     }
 }

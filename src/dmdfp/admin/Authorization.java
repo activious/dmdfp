@@ -3,6 +3,7 @@ package dmdfp.admin;
 import dmdfp.share.Cloudy;
 import dmdfp.share.Environment;
 
+import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
@@ -27,11 +28,20 @@ public class Authorization implements Serializable
     @ManagedProperty("#{env}")
     private Environment env;
 
+    private Cloudy cloud;
+
+    @PostConstruct
+    public void init()
+    {
+        cloud = new Cloudy();
+        cloud.setSchemaPath(env.getCloudSchemaPath());
+    }
+
     public String login()
     {
         try
         {
-            if (Cloudy.login(user.getUsername(), user.getPassword(), env.getCloudSchemaPath()))
+            if (cloud.login(user.getUsername(), user.getPassword()))
             {
                 setLoggedIn(true);
                 return SUCCESS;

@@ -30,14 +30,17 @@ public class Basket
             items.remove(item);
     }
 
-    public void adjustItemAmount(int itemId, int amount)
+    public boolean adjustItemAmount(int itemId, int amount)
     {
         BasketItem item = getItemById(itemId);
 
         if (item != null)
         {
             item.setAmount(amount);
+            return true;
         }
+
+        return false;
     }
 
     public BasketItem getItemById(int itemId)

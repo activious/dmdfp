@@ -37,9 +37,14 @@ public class ItemList implements Serializable
     @ManagedProperty("#{env}")
     private Environment env;
 
+    private Cloudy cloud;
+
     @PostConstruct
     public void init()
     {
+        cloud = new Cloudy();
+        cloud.setSchemaPath(env.getCloudSchemaPath());
+
         listItems();
     }
 
@@ -79,7 +84,7 @@ public class ItemList implements Serializable
         items = new ArrayList<Item>();
 
         try {
-            Document resp = Cloudy.listItems(env.getCloudSchemaPath());
+            Document resp = cloud.listItems();
 
             Item item;
             for (Element elm : resp.getRootElement().getChildren(ITEM, Cloudy.NS))
