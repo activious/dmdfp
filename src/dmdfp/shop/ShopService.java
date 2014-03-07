@@ -13,6 +13,7 @@ import org.json.JSONObject;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -104,7 +105,7 @@ public class ShopService
 
     @POST
     @Path("login")
-    public boolean login(@Context HttpSession session,
+    public boolean login(@Context HttpServletRequest request,
                          @FormParam("username") String username,
                          @FormParam("password") String password)
     {
@@ -114,7 +115,7 @@ public class ShopService
             if (custId != -1)
             {
                 Customer customer = new Customer(custId, username);
-                session.setAttribute(CUSTOMER, customer);
+                request.getSession(true).setAttribute(CUSTOMER, customer);
                 return true;
             }
         }
@@ -128,33 +129,34 @@ public class ShopService
 
     @GET
     @Path("logout")
-    public boolean logout(@Context HttpSession session)
+    public boolean logout(@Context HttpServletRequest request)
     {
-        session.invalidate();
+        request.getSession().invalidate();
         return true;
     }
 
     @POST
     @Path("addItemToBasket")
-    public void addItemToBasket(@Context HttpSession session,
+    public void addItemToBasket(@Context HttpServletRequest request,
                                 @FormParam("itemId") int itemId)
     {
-        getBasket(session).addItem(itemId, 1);
+        getBasket(request.getSession()).addItem(itemId, 1);
     }
 
     @POST
     @Path("adjustAmount")
-    public void adjustAmount(@Context HttpSession session,
+    public void adjustAmount(@Context HttpServletRequest request,
                              @FormParam("itemId") int itemId,
                              @FormParam("amount") int amount)
     {
-        getBasket(session).adjustItemAmount(itemId, amount);
+        getBasket(request.getSession()).adjustItemAmount(itemId, amount);
     }
 
     @POST
     @Path("sellItems")
-    public void sellItems(@Context HttpSession session)
+    public void sellItems(@Context HttpServletRequest request)
     {
+        HttpSession session = request.getSession();
         List<BasketItem> items = getBasket(session).getItems();
 
         try
@@ -175,7 +177,7 @@ public class ShopService
 
     @POST
     @Path("createCustomer")
-    public int createCustomer(@Context HttpSession session,
+    public int createCustomer(@Context HttpServletRequest request,
                               @FormParam("username") String username,
                               @FormParam("password") String password)
     {
@@ -184,13 +186,11 @@ public class ShopService
 
             if (resp != -1)
             {
-                login(session, username, password);
+                login(request, username, password);
             }
 
             return resp;
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JDOMException e) {
+        } catch (IOException|JDOMException e) {
             e.printStackTrace();
         }
 
