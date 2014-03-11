@@ -57,4 +57,9 @@ public class Basket
 
         return null;
     }
+
+    public void clear()
+    {
+        items.clear();
+    }
 }

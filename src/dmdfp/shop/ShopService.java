@@ -125,6 +125,17 @@ public class ShopService
         return arr.toString();
     }
 
+
+    @GET
+    @Path("getUsername")
+    public String getUsername(@Context HttpServletRequest request) {
+        Customer cust = getCustomer(request.getSession(true));
+        if(cust != null) {
+            return cust.getName();
+        } else {
+            return "";
+        }
+    }
     @POST
     @Path("login")
     public boolean login(@Context HttpServletRequest request,
@@ -174,27 +185,35 @@ public class ShopService
         getBasket(request.getSession()).adjustItemAmount(itemId, amount);
     }
 
-    @POST
+    @GET
     @Path("sellItems")
-    public void sellItems(@Context HttpServletRequest request)
+    public boolean sellItems(@Context HttpServletRequest request)
     {
         HttpSession session = request.getSession();
-        List<BasketItem> items = getBasket(session).getItems();
-
+        Basket basket = getBasket(session);
+        List<BasketItem> items = basket.getItems();
+        boolean hasError = false;
         try
         {
             for (BasketItem item : items)
             {
-                cloud.sellItem(
+                String status = cloud.sellItem(
                         item.getItemId(),
                         getCustomer(session).getId(),
                         item.getAmount());
+                if (!status.equals("OK")) {
+                    hasError = true;
+                }
             }
+            basket.clear();
+            return !hasError;
         }
         catch (IOException|JDOMException e)
         {
             e.printStackTrace();
         }
+
+        return false;
     }
 
     @POST

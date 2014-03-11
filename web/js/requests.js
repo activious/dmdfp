@@ -63,6 +63,7 @@ function login() {
         ajaxPost("/dmdfp/rest/shop/login", {username:username, password:password}, function(resp) {
             if (resp == "true") {
                 message.text("Success");
+                updateUsername();
                 $("#login-box").hide();
             } else {
                 message.text("Wrong password and/or username")
@@ -104,6 +105,26 @@ function addItemToBasket(itemId) {
 }
 
 function checkout() {
+    console.log("username is" +username)
+    if (username == "") {
+        $("body").find("#login-box").slideToggle();
+    } else {
 
+        ajaxGet("/dmdfp/rest/shop/sellItems", function(resp) {
+            if (resp == "true") {
+                $("#message-box").text("Congratulations")
+                basket.clearBasket();
+            } else {
+                $("#message-box").text("You may have bought some items")
+                basket.clearBasket();
+            }
+        });
+    }
 
+}
+
+function updateUsername() {
+    ajaxGet("/dmdfp/rest/shop/getUsername", function(resp) {
+        username = resp;
+    });
 }

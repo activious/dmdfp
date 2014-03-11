@@ -2,6 +2,7 @@
  * Created by khk on 3/2/14.
  */
 var basket;
+var username = "";
 
 $(function() {
     $.when(
@@ -12,6 +13,7 @@ $(function() {
         listItems();
         basket = new Basket();
         updateBasket();
+        updateUsername();
     });
 
     /*$(document)

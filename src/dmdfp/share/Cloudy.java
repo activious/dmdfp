@@ -325,6 +325,7 @@ public class Cloudy
         appendTextElement(root, ADJUSTMENT, String.valueOf(adjustment));
 
         HttpURLConnection con = openCon(ADJUST_ITEM_STOCK, POST);
+        Validator.validateXML(req,schemaPath);
         int respCode = send(req, con);
         closeCon(con);
 
@@ -341,6 +342,7 @@ public class Cloudy
         appendTextElement(root, CUSTOMER_PASS, password);
 
         HttpURLConnection con = openCon(LOGIN, POST);
+        Validator.validateXML(doc,schemaPath);
         int respCode = send(doc, con);
 
         if (respCode != 200)
@@ -372,6 +374,7 @@ public class Cloudy
         appendTextElement(root, CUSTOMER_PASS, password);
 
         HttpURLConnection con = openCon(CREATE_CUSTOMER, POST);
+        Validator.validateXML(doc,schemaPath);
         int respCode = send(doc, con);
 
         if (respCode != 200)
@@ -422,6 +425,7 @@ public class Cloudy
         appendTextElement(root, ITEM_NAME, itemName);
 
         HttpURLConnection con = openCon(CREATE_ITEM, POST);
+        Validator.validateXML(doc,schemaPath);
         int respCode = send(doc, con);
 
         if (respCode != 200)
@@ -487,13 +491,14 @@ public class Cloudy
         root.addContent(itemDesc);
 
         HttpURLConnection con = openCon(MODIFY_ITEM, POST);
+        Validator.validateXML(doc,schemaPath);
         int respCode = send(doc, con);
         closeCon(con);
 
         return (respCode == 200);
     }
 
-    public Enum sellItem(int itemId,
+    public String sellItem(int itemId,
                          int customerID,
                          int saleAmount)
             throws IOException, JDOMException
@@ -505,7 +510,9 @@ public class Cloudy
         appendTextElement(root, CUSTOMER_ID, String.valueOf(customerID));
         appendTextElement(root, SALE_AMOUNT, String.valueOf(saleAmount));
 
-        HttpURLConnection con = openCon(SELL_ITEM, POST);
+        HttpURLConnection con = openCon(SELL_ITEM+"s", POST);
+        Validator.validateXML(doc,schemaPath);
+
         int respCode = send(doc, con);
         Document resp = Validator.readAndValidateXML(
                 con.getInputStream(), schemaPath);
@@ -516,9 +523,9 @@ public class Cloudy
         }
         String name = resp.getRootElement().getChildren().get(0).getName();
         switch (name) {
-            case "ok": return SaleStatus.OK;
-            case "itemSoldOut": return SaleStatus.SOLD_OUT;
-            default: return SaleStatus.ERROR;
+            case "ok": return SaleStatus.OK.toString();
+            case "itemSoldOut": return SaleStatus.SOLD_OUT.toString();
+            default: return SaleStatus.ERROR.toString();
         }
     }
 

@@ -48,3 +48,10 @@ Basket.prototype.updateDisplay = function()
         list.append($(sprintf('<li>Item id: %d, amount: %d</li>', item.id, item.amount)));
     }
 }
+
+Basket.prototype.clearBasket = function() {
+    this.items = []
+    var list = $("#basket-list");
+    list.empty();
+    this.updateDisplay();
+}

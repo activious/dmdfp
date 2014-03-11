@@ -8,7 +8,12 @@ $("#login-box").hide();
 
 $(document).ready(
 function() {
+    showLogin();
+});
+
+function showLogin()
+{
     $("#login-link").on("click", function(){
         $("body").find("#login-box").slideToggle();
     });
-});
+}
