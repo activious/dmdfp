@@ -17,10 +17,10 @@ function listItems()
 
             // Item image
             container.append($(sprintf(
-                '<a class="product-image" href="javascript:viewItem(%d)">'
+                '<a class="product-image" href="javascript:viewItem(%d)" ondragstart="dragItem(event, %d)">'
                 + '<img alt="%s" src="%s" />'
                 + '</a>',
-                item.id, item.name, item.url
+                item.id, item.id, item.name, item.url
             )));
 
             // Item name

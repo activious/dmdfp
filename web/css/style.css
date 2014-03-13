@@ -37,6 +37,31 @@ hr {
     width: 25%;
 }
 
+/* Basket */
+#message-box {
+    margin: 20px;
+    padding: 10px;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    background: YellowGreen;
+    border-radius: 20px;
+}
+
+#basket-drop {
+    position: fixed;
+    top: 10px;
+    right: 50px;
+    width: 120px;
+}
+
+#basket-list {
+    position: fixed;
+    top: 120px;
+    right: 40px;
+    color: black;
+}
+
 #page-wrapper {
     background: url(../images/subtle_white_feathers.png);
     border-bottom: 2px solid rgb(190,190,190);

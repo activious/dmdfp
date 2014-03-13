@@ -16,12 +16,31 @@ $(function() {
         updateUsername();
     });
 
+    $("#basket-drop")
+        .on("dragover", prevent) // Allow drop on element
+        .on("dragenter", prevent) // Allow drop on element (IE)
+        .on("drop", function(event) {
+            event.preventDefault();
+            var itemId = parseInt(event.originalEvent.dataTransfer.getData("Text"));
+            basket.addItem(itemId);
+        });
+
     /*$(document)
         .bind("ajaxStart", function() {
         })
         .bind("ajaxStop", function() {
         });*/
 });
+
+function prevent(event)
+{
+    event.preventDefault();
+}
+
+function dragItem(event, itemId)
+{
+    event.dataTransfer.setData("Text", itemId);
+}
 
 function ajaxGet(url, callback)
 {
